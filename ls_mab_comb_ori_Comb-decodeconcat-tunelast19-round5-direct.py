@@ -573,7 +573,7 @@ class Experiment:
                 pickle_path=Path(f'./sbert-fine-tune-dataset/'+dataset+'/code2tokens'),
                 device=device,
             )
-        '''
+        
         ## SBERT model fine-tune preprocessing...
         # print("SBERT model fine-tune preprocessing...")
         logger.info('SBERT model fine-tune preprocessing...')
@@ -635,7 +635,7 @@ class Experiment:
         print("Finish SBERT model fine-tune preprocessing...")
         logger.info('Finish SBERT model fine-tune preprocessing...')
             
-        '''
+        
 
 
         '''
