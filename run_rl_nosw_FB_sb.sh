@@ -5,14 +5,14 @@
 # our
 
 # SRPRS/en_fr data/fb_dbp
-CUDA_VISIBLE_DEVICES=0 python3 ls_mab_comb_ori_Comb-decodeconcat-tunelast18-round2-direct.py --log gcnalign \
-                                    --model_name "GCNAPP_contras_active-decodeconcat-Multi-Iter-epoch3-tunelast18-round2-direct" \
-                                    --finetune_dataset "KK100-Multi-Iter-epoch3-tunelast18-round2-direct" \
+CUDA_VISIBLE_DEVICES=0 python3 ls_mab_comb_ori_Comb-decodeconcat-tunelast19-round5-direct.py --log gcnalign \
+                                    --model_name "GCNAPP_contras_active-decodeconcat-SB-Iter-epoch3-tunelast19-round5-direct" \
+                                    --finetune_dataset "FB100-SB-Iter-epoch3-tunelast19-round5" \
                                     --finetune_epoch 3 \
                                     --sb_fine_tune 1 \
                                     --load_from_ori 0 \
                                     --seed 2020\
-                                    --data_dir "data/kkv4_prime" \
+                                    --data_dir "data/fb_dbp" \
                                     --rate 0.3 \
                                     --epoch 300 \
                                     --check 300 \

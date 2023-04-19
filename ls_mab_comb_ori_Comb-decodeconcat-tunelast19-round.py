@@ -618,7 +618,7 @@ class Experiment:
         
 
         ### Settings for only tuning (last 19 layers) (11+pool) ###
-        for name, param in list(sbert.named_parameters())[:-18]:
+        for name, param in list(sbert.named_parameters())[:-19]:
             # print(name)
             param.requires_grad = False
         for name, param in (sbert.named_parameters()):
@@ -1386,9 +1386,9 @@ def cmab(lefts, score_dicts, train_mapping, trained, ouf):
     # print("total time elapsed: {:.4f} s".format(time.time() - t_total))
 
     for r in range(2,R+1):
-        if r<=2 and args.sb_fine_tune==1:
+        if r<=5 and args.sb_fine_tune==1:
             sb_fine_tune_ = 1
-        if r>2:
+        if r>5:
             sb_fine_tune_ = 0
         H1_pre = H1
         suggestedEnt2Score, suggestedEnts = suggesting_score(lefts, score_dicts, b, U, r, num_chosen)

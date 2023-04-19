@@ -171,9 +171,9 @@ def dump_code2tokens(
 ):
     pickle_path.parent.mkdir(parents=True, exist_ok=True)
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
-    model = SentenceTransformer('bert-base-multilingual-cased', device=device)
+    # model = SentenceTransformer('bert-base-multilingual-cased', device=device)
     # model = SentenceTransformer('colorfulscoop/sbert-base-ja', device=device)
-    # model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2', device=device)
+    model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2', device=device)
 
     logger.info('Load from')
     # logger.info(kg_path)
@@ -356,6 +356,43 @@ class PairsDataset(IterableDataset):
 
 
 
+
+
+
+
+pretrained_model ='sentence-transformers/all-mpnet-base-v2' # 'sentence-transformers/all-mpnet-base-v2' #'bert-base-multilingual-cased' 'colorfulscoop/sbert-base-ja'
+# pretrained_ckpt = str(0) #'' ##str(epoch-1) ##[For iter only]
+# batch_size = 20
+# model_path = Path('./sbert-fine-tune-model_status/'+dataset)
+# embed_path = Path('twotower.embed')
+# pairs_path = Path('./sbert-fine-tune-dataset/'+dataset+'/train.pairs') #sys.argv[1]
+
+sbert = TwoTower(pretrained_model)
+# sbert.to(device)
+
+# if args.load_from_ori == 0:
+#     if Path(model_path/pretrained_ckpt).exists():
+#         # twotower.load_state_dict(torch.load(model_path/pretrained_ckpt))
+#         print("load_state_dict: ", model_path/pretrained_ckpt)
+#         logger.info('load_state_dict')
+#         sbert.load_state_dict(torch.load(model_path/pretrained_ckpt, map_location=device))
+#     # twotower.to(device)
+#     sbert.to(device)
+
+
+
+### Settings for only tuning (last 19 layers) (11+pool) ###
+for name, param in list(sbert.named_parameters())[:-19]:
+    # print(name)
+    param.requires_grad = False
+for name, param in (sbert.named_parameters()):
+    if param.requires_grad == True:
+        print(name)
+### ####################################################### ###
+
+
+
+
 # ================================================================================================================
 
 # --- SBert ---
@@ -525,6 +562,9 @@ class Experiment:
         print(len(pos_batch))
         # all_pos_ids = list(pos_batch.flatten('C')) ## all_pos_ids
 
+
+        dataset = self.args.finetune_dataset #"KK100-JP-3epoch"
+        '''
         ## SBERT model fine-tune preprocessing...
         # print("SBERT model fine-tune preprocessing...")
         logger.info('SBERT model fine-tune preprocessing...')
@@ -586,10 +626,10 @@ class Experiment:
         print("Finish SBERT model fine-tune preprocessing...")
         logger.info('Finish SBERT model fine-tune preprocessing...')
             
+        '''
 
 
-
-
+        '''
         print("SBERT model training...")
         logger.info('SBERT model training...')
         # dataset = self.args.finetune_dataset #"KK100-JP-3epoch"
@@ -691,7 +731,7 @@ class Experiment:
             print("Finish SBERT model training...")
             logger.info('Finish SBERT model training...')
             ### [FOR ITER ONLY END] ### 
-
+        '''
 
 
         print("Init SBERT embeddings:...")
@@ -1093,7 +1133,8 @@ class Experiment:
             params = nn.ParameterList([self.ins_embeddings.weight, self.rel_embeddings.weight]
                                       + [p for p in knowledge_decoder.parameters()]
                                       + (list(graph_encoder.parameters()))
-                                      + (list(graph_encoder1.parameters())))
+                                      + (list(graph_encoder1.parameters()))
+                                      )
 
             if self.args.contras_flag == 1:
                 params1 = nn.ParameterList((list(self.fc1.parameters())) + (list(self.fc2.parameters())))
@@ -1164,7 +1205,13 @@ class Experiment:
         self.init_emb()
 
         graph_encoder, knowledge_decoder, pos_batch, neg_batch = self.prepare_input(sb_fine_tune) #[For Iter only]
-        params = nn.ParameterList([self.ins_embeddings.weight, self.rel_embeddings.weight]
+        if sb_fine_tune == 1:
+            params = nn.ParameterList([self.ins_embeddings.weight, self.rel_embeddings.weight]
+                                    + [p for p in knowledge_decoder.parameters()]
+                                    + (list(graph_encoder.parameters()))
+                                    + (list(sbert.parameters())))
+        if sb_fine_tune == 0:
+            params = nn.ParameterList([self.ins_embeddings.weight, self.rel_embeddings.weight]
                                   + [p for p in knowledge_decoder.parameters()]
                                   + (list(graph_encoder.parameters()))
                                   )
@@ -1386,9 +1433,9 @@ def cmab(lefts, score_dicts, train_mapping, trained, ouf):
     # print("total time elapsed: {:.4f} s".format(time.time() - t_total))
 
     for r in range(2,R+1):
-        if r<=2 and args.sb_fine_tune==1:
+        if r<=4 and args.sb_fine_tune==1:
             sb_fine_tune_ = 1
-        if r>2:
+        if r>4:
             sb_fine_tune_ = 0
         H1_pre = H1
         suggestedEnt2Score, suggestedEnts = suggesting_score(lefts, score_dicts, b, U, r, num_chosen)
