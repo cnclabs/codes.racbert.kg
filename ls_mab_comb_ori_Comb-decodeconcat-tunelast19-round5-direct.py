@@ -565,14 +565,6 @@ class Experiment:
 
         dataset = self.args.finetune_dataset #"KK100-JP-3epoch"
         global sbert_embeddings
-        if not Path(f'./sbert-fine-tune-dataset/'+dataset+'/code2tokens').exists():
-            dump_code2tokens(
-                kg_text_path=Path('./sbert-fine-tune-dataset/'+dataset+'/line-kg.idx.txt'),
-                # kg_path=Path('./sbert-fine-tune-dataset/line-kg.txt'),
-                pretrained_model=pretrained_model,
-                pickle_path=Path(f'./sbert-fine-tune-dataset/'+dataset+'/code2tokens'),
-                device=device,
-            )
         
         ## SBERT model fine-tune preprocessing...
         # print("SBERT model fine-tune preprocessing...")
@@ -636,6 +628,15 @@ class Experiment:
         logger.info('Finish SBERT model fine-tune preprocessing...')
             
         
+
+        if not Path(f'./sbert-fine-tune-dataset/'+dataset+'/code2tokens').exists():
+            dump_code2tokens(
+                kg_text_path=Path('./sbert-fine-tune-dataset/'+dataset+'/line-kg.idx.txt'),
+                # kg_path=Path('./sbert-fine-tune-dataset/line-kg.txt'),
+                pretrained_model=pretrained_model,
+                pickle_path=Path(f'./sbert-fine-tune-dataset/'+dataset+'/code2tokens'),
+                device=device,
+            )
 
 
         '''
