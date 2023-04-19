@@ -564,6 +564,7 @@ class Experiment:
 
 
         dataset = self.args.finetune_dataset #"KK100-JP-3epoch"
+        global sbert_embeddings
         '''
         ## SBERT model fine-tune preprocessing...
         # print("SBERT model fine-tune preprocessing...")
