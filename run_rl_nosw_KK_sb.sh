@@ -5,7 +5,7 @@
 # our
 
 # SRPRS/en_fr data/fb_dbp
-CUDA_VISIBLE_DEVICES=0 python3 ls_mab_comb_ori_Comb-decodeconcat-tunelast18-round2-direct.py --log gcnalign \
+CUDA_VISIBLE_DEVICES=1 python3 ls_mab_comb_ori_Comb-decodeconcat-tunelast18-round2-direct.py --log gcnalign \
                                     --model_name "GCNAPP_contras_active-decodeconcat-Multi-Iter-epoch3-tunelast18-round2-direct" \
                                     --finetune_dataset "KK100-Multi-Iter-epoch3-tunelast18-round2-direct" \
                                     --finetune_epoch 3 \
